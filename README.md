@@ -1,11 +1,12 @@
+[![DOI](https://zenodo.org/badge/264787686.svg)](https://zenodo.org/badge/latestdoi/264787686)
 
 ## DKF Implementations
 
 *This repository contains code implementations for the Discriminative Kalman Filter.*
 
 We currently offer example code for filtering using the following languages:
-- Python
 - Matlab
+- Python
 - R
 
 Contributions are welcome!

@@ -1,18 +1,12 @@
 import numpy as np
 import tensorflow as tf
-from scipy.io import loadmat as sp_loadmat
 from sklearn.model_selection import train_test_split as skl_tt_split
 
 from DiscriminativeKalmanFilter import DiscriminativeKalmanFilter
 
 # data source
-data = sp_loadmat("../data/exampleData.mat")
-z = data["procd"]["velocities"][0][0][
-    1:,
-]
-x = data["procd"]["spikes"][0][0][
-    :-1,
-]
+z = np.loadtxt("../data/z.csv", delimiter=",")
+x = np.loadtxt("../data/x.csv", delimiter=",")
 
 # dimensions of latent states and observations, respectively
 dz, dx = z.shape[1], x.shape[1]

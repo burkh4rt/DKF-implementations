@@ -1,17 +1,13 @@
 source("DiscriminativeKalmanFilter.R")
 
-library(R.matlab)
 library(MASS)
 library(ranger)
 
 set.seed(0)
 
 # data source
-procd <- readMat("../data/exampleData.mat")
-vel <- matrix(unlist(procd$procd[1]), ncol = 2)
-spk <- matrix(unlist(procd$procd[2]), ncol = 10)
-z <- vel[2:nrow(vel), ]
-x <- spk[1:nrow(vel) - 1, ]
+z <- as.matrix(read.csv(file="../data/z.csv"))
+x <- as.matrix(read.csv(file="../data/x.csv"))
 
 # dimensions of latent states and observations, respectively
 dz <- ncol(z)

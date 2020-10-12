@@ -1,12 +1,9 @@
 "DiscriminativeKalmanFilter.m";
 
 % data source
-addpath(genpath(fileparts(mfilename('fullpath'))));
-load('../data/exampleData.mat');
-vel = procd(1).velocities;
-spk = procd(1).spikes;
-z = vel(2:end,:);
-x = spk(1:end-1,:);
+cd(fileparts(mfilename('fullpath')));
+z = readmatrix('../data/z.csv');
+x = readmatrix('../data/x.csv');
 
 % dimensions of latent states and observations, respectively
 dz = size(z,2);

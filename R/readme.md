@@ -1,4 +1,5 @@
-Runs with R version 4.1.2 (2021-11-01) "Bird Hippie" and the packages contained in `renv.lock`.
+Runs with R version 4.1.2 (2021-11-01) "Bird Hippie" and the packages contained
+in `renv.lock`.
 
 ```
 R

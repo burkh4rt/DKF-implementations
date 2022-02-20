@@ -23,8 +23,7 @@ x_test, z_test = x[test_idx,], z[test_idx,]
 
 # learn state model parameters A & Gamma from Eq. (2.1b)
 A0 = np.linalg.lstsq(z_train[1:,], z_train[:-1,])[0]
-resids = z_train[:-1,].T - np.matmul(A0, z_train[1:,].T)
-Gamma0 = np.matmul(resids, resids.T) / n_train
+Gamma0 = np.mat(np.cov(z_train[1:,] - np.matmul(z_train[:-1,],A0), rowvar=False))
 
 # split training set in order to train f() and Q() from Eq. (2.2) separately
 x_train_mean, x_train_covariance, z_train_mean, z_train_covariance = skl_tt_split(

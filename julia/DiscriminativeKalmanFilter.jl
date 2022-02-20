@@ -41,6 +41,6 @@ returns new posterior mean as in eq. (2.7)
 """
 function predict!(DKF::DiscriminativeKalmanFilter, newMeasurement::Vector{Float64})
     stateUpdate!(DKF)
-    measurementUpdate!(DKF,newMeasurement)
+    measurementUpdate!(DKF, newMeasurement)
     return DKF.μₜ
 end

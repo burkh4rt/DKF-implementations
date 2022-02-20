@@ -1,3 +1,8 @@
+#idiosyncratic
+*.toml linguist-vendored
+data/* linguist-vendored
+*/requirements.txt linguist-vendored
+
 # Basic .gitattributes for a MATLAB repo.
 # This template includes Simulink and MuPAD extensions, in addition
 # to the MATLAB extensions.

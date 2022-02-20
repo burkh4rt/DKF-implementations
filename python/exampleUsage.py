@@ -14,16 +14,30 @@ dz, dx = z.shape[1], x.shape[1]
 # training data
 train_idx = range(5000)
 n_train = len(train_idx)
-x_train, z_train = x[train_idx,], z[train_idx,]
+x_train, z_train = (
+    x[train_idx, :],
+    z[train_idx, :],
+)
 
 # test data
 test_idx = range(5000, 6000)
 n_test = len(test_idx)
-x_test, z_test = x[test_idx,], z[test_idx,]
+x_test, z_test = (
+    x[test_idx, :],
+    z[test_idx, :],
+)
 
 # learn state model parameters A & Gamma from Eq. (2.1b)
-A0 = np.linalg.lstsq(z_train[1:,], z_train[:-1,])[0]
-Gamma0 = np.mat(np.cov(z_train[1:,] - np.matmul(z_train[:-1,],A0), rowvar=False))
+A0 = np.linalg.lstsq(
+    z_train[1:, :],
+    z_train[:-1, :],
+)[0]
+Gamma0 = np.mat(
+    np.cov(
+        z_train[1:, :] - z_train[:-1, :] @ A0,
+        rowvar=False,
+    )
+)
 
 # split training set in order to train f() and Q() from Eq. (2.2) separately
 x_train_mean, x_train_covariance, z_train_mean, z_train_covariance = skl_tt_split(
@@ -46,20 +60,20 @@ fx = lambda x: mean_model.predict(x.reshape(-1, dx))[0].reshape(dz, 1)
 z_train_preds = np.array(mean_model.predict_on_batch(x_train_covariance))
 cov_est = np.zeros((dz, dz))
 for i in range(z_train_preds.shape[0]):
-    resid_i = np.mat((z_train_preds[i,] - z_train_covariance[i,]).reshape(dz, 1))
+    resid_i = np.mat((z_train_preds[i, :] - z_train_covariance[i, :]).reshape(dz, 1))
     cov_est += np.matmul(resid_i, resid_i.T) / z_train_preds.shape[0]
 Qx = lambda x: cov_est
 
 # initialize DKF using learned parameters
 f0, Q0 = fx(x_test[0, :]), Qx(x_test[0, :])
 DKF = DiscriminativeKalmanFilter(
-    stateModelA=A0,
-    stateModelGamma=Gamma0,
-    stateModelS=np.cov(z_train.T),
-    measurementModelF=fx,
-    measurementModelQ=Qx,
-    currentPosteriorMean=f0,
-    currentPosteriorCovariance=Q0,
+    Α=A0,
+    Γ=Gamma0,
+    S=np.cov(z_train.T),
+    f=fx,
+    Q=Qx,
+    μₜ=f0,
+    Σₜ=Q0,
 )
 
 # perform filtering

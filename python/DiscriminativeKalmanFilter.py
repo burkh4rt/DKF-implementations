@@ -4,67 +4,63 @@ from numpy.linalg import *
 
 
 class DiscriminativeKalmanFilter(skl.base.BaseEstimator):
+    """
+    Implements the Discriminative Kalman Filter as described in Burkhart, M.C.,
+    Brandman, D.M., Franco, B., Hochberg, L.R., & Harrison, M.T.'s "The
+    discriminative Kalman filter for Bayesian filtering with nonlinear and
+    nongaussian observation models." Neural Comput. 32(5), 969–1017 (2020).
+    """
+
     def __init__(
         self,
-        stateModelA=None,
-        stateModelGamma=None,
-        stateModelS=None,
-        measurementModelF=None,
-        measurementModelQ=None,
-        currentPosteriorMean=None,
-        currentPosteriorCovariance=None,
+        Α=None,
+        Γ=None,
+        S=None,
+        f=None,
+        Q=None,
+        μₜ=None,
+        Σₜ=None,
     ):
-        self.stateModelA = np.mat(stateModelA)
-        self.stateModelGamma = np.mat(stateModelGamma)
-        self.stateModelS = np.mat(stateModelS)
-        self.measurementModelF = lambda x: np.mat(measurementModelF(x))
-        self.measurementModelQ = lambda x: np.mat(measurementModelQ(x))
-        self.currentPosteriorMean = np.mat(currentPosteriorMean)
-        self.currentPosteriorCovariance = np.mat(currentPosteriorCovariance)
-        self.dState = stateModelA.shape[0]
-        assert self.stateModelA.shape == (self.dState, self.dState)
-        assert self.stateModelGamma.shape == (self.dState, self.dState)
-        assert np.all(eigvals(self.stateModelGamma) > 0.0)
-        assert np.allclose(self.stateModelGamma, self.stateModelGamma.T)
-        assert self.stateModelS.shape == (self.dState, self.dState)
-        assert np.all(eigvals(self.stateModelS) > 0.0)
-        assert np.allclose(self.stateModelS, self.stateModelS.T)
-        assert self.currentPosteriorMean.shape == (self.dState, 1)
-        assert self.currentPosteriorCovariance.shape == (self.dState, self.dState)
-        assert np.all(eigvals(self.currentPosteriorCovariance) > 0.0)
-        assert np.allclose(
-            self.currentPosteriorCovariance, self.currentPosteriorCovariance.T
-        )
+        self.Α = Α  # from eq. (2.1b)
+        self.Γ = Γ  # from eq. (2.1b)
+        self.S = S  # from eq. (2.1a)
+        self.f = lambda x: f(x)  # from eq. (2.2)
+        self.Q = lambda x: Q(x)  # from eq. (2.2)
+        self.μₜ = μₜ  # from eq. (2.6)
+        self.Σₜ = Σₜ  # from eq. (2.6)
+        self.d = Α.shape[0]  # as in eq. (2)
 
     def stateUpdate(self):
-        self.currentPosteriorMean = self.stateModelA * self.currentPosteriorMean
-        self.currentPosteriorCovariance = (
-            self.stateModelA * self.currentPosteriorCovariance * self.stateModelA.T
-            + self.stateModelGamma
-        )
+        """
+        calculates the first 2 lines of eq. (2.7) in-place
+        """
+        self.μₜ = self.Α @ self.μₜ
+        self.Σₜ = self.Α @ self.Σₜ @ self.Α.T + self.Γ
 
     def measurementUpdate(self, newMeasurement):
-        Qx = self.measurementModelQ(newMeasurement)
-        fx = self.measurementModelF(newMeasurement)
-        assert fx.shape == (self.dState, 1)
-        assert Qx.shape == (self.dState, self.dState)
-        assert np.all(eigvals(Qx) > 0.0)
-        assert np.allclose(Qx, Qx.T)
-        if not np.all(eigvals(inv(Qx) - inv(self.stateModelS)) > 1e-6):
-            Qx = inv(inv(Qx) + inv(self.stateModelS))
-        newPosteriorCovInv = np.mat(
-            inv(self.currentPosteriorCovariance) + inv(Qx) - inv(self.stateModelS)
-        )
-        self.currentPosteriorMean = np.mat(
+        """
+        calculates the last 2 lines of eq. (2.7)
+        :param newMeasurement: new observation
+        """
+        Qxₜ = self.Q(newMeasurement)
+        fxₜ = self.f(newMeasurement)
+        if not np.all(eigvals(inv(Qxₜ) - inv(self.S)) > 1e-6):
+            Qxₜ = inv(inv(Qxₜ) + inv(self.S))
+        newPosteriorCovInv = inv(self.Σₜ) + inv(Qxₜ) - inv(self.S)
+        self.μₜ = np.mat(
             solve(
                 newPosteriorCovInv,
-                solve(self.currentPosteriorCovariance, self.currentPosteriorMean)
-                + solve(Qx, fx),
+                solve(self.Σₜ, self.μₜ) + solve(Qxₜ, fxₜ),
             )
         )
-        self.currentPosteriorCovariance = np.mat(inv(newPosteriorCovInv))
+        self.Σₜ = inv(newPosteriorCovInv)
 
     def predict(self, newMeasurement):
+        """
+        performs stateUpdate() and measurementUpdate(newMeasurement)
+        :param newMeasurement: new observation
+        :return: new posterior mean as in eq. (2.7)
+        """
         self.stateUpdate()
         self.measurementUpdate(newMeasurement)
-        return self.currentPosteriorMean
+        return self.μₜ

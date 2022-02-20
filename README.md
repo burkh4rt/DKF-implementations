@@ -3,7 +3,7 @@
 ## DKF Implementations
 
 _This repository contains code implementations for the Discriminative Kalman
-Filter. [^1][^2][^3][^4] _
+Filter. [^1][^2][^3][^4]_
 
 We currently offer example code for filtering using the following languages:
 

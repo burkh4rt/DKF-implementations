@@ -1,4 +1,5 @@
 #idiosyncratic
+*.lock linguist-vendored
 *.toml linguist-vendored
 data/* linguist-vendored
 */requirements.txt linguist-vendored

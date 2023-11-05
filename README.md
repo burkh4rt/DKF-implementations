@@ -48,7 +48,7 @@ The data consists of run 1 from the pre-processed Flint data found in
 format code with:
 ```
 prettier --write --print-width 79 --prose-wrap always **/*.md
-black -l 79 python/
+black -l 79 python*/
 R -e 'styler::style_dir("R/", transformers = styler::tidyverse_style(strict = TRUE))'
 julia -e 'using JuliaFormatter; format("julia/")'
 ```

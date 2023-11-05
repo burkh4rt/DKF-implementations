@@ -23,7 +23,10 @@ end
 """
 calculates the last 2 lines of eq. (2.7)
 """
-function measurementUpdate!(DKF::DiscriminativeKalmanFilter, newMeasurement::Vector{Float64})
+function measurementUpdate!(
+    DKF::DiscriminativeKalmanFilter,
+    newMeasurement::Vector{Float64},
+)
     Qxₜ = DKF.Q(newMeasurement)
     fxₜ = DKF.f(newMeasurement)
     if minimum(eigvals(inv(Qxₜ) - inv(DKF.S))) <= 1e-6

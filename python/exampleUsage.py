@@ -28,10 +28,7 @@ x_test, z_test = (
 )
 
 # learn state model parameters A & Gamma from Eq. (2.1b)
-A0 = np.linalg.lstsq(
-    z_train[1:, :],
-    z_train[:-1, :],
-)[0]
+A0 = np.linalg.lstsq(z_train[1:, :], z_train[:-1, :], rcond=None)[0]
 Gamma0 = np.mat(
     np.cov(
         z_train[1:, :] - z_train[:-1, :] @ A0,
@@ -40,9 +37,12 @@ Gamma0 = np.mat(
 )
 
 # split training set in order to train f() and Q() from Eq. (2.2) separately
-x_train_mean, x_train_covariance, z_train_mean, z_train_covariance = skl_tt_split(
-    x_train, z_train, train_size=0.9
-)
+(
+    x_train_mean,
+    x_train_covariance,
+    z_train_mean,
+    z_train_covariance,
+) = skl_tt_split(x_train, z_train, train_size=0.9)
 
 # learn f() as a neural network
 mean_model = tf.keras.models.Sequential(
@@ -60,7 +60,9 @@ fx = lambda x: mean_model.predict(x.reshape(-1, dx))[0].reshape(dz, 1)
 z_train_preds = np.array(mean_model.predict_on_batch(x_train_covariance))
 cov_est = np.zeros((dz, dz))
 for i in range(z_train_preds.shape[0]):
-    resid_i = np.mat((z_train_preds[i, :] - z_train_covariance[i, :]).reshape(dz, 1))
+    resid_i = np.mat(
+        (z_train_preds[i, :] - z_train_covariance[i, :]).reshape(dz, 1)
+    )
     cov_est += np.matmul(resid_i, resid_i.T) / z_train_preds.shape[0]
 Qx = lambda x: cov_est
 
@@ -85,5 +87,6 @@ for i in range(1, n_test):
 # handle output
 print(
     "normalized rmse",
-    np.sqrt(np.mean(np.square(z_test - z_preds))) / np.sqrt(np.mean(np.square(z_test))),
+    np.sqrt(np.mean(np.square(z_test - z_preds)))
+    / np.sqrt(np.mean(np.square(z_test))),
 )

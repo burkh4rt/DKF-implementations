@@ -1,9 +1,15 @@
-Runs with Julia 1.7.2 and packages as given in the Manifest file.
+## DKF Implementations | Julia
 
-Three separate runs of
+> Runs with Julia 1.9.3 and packages as given in the Project.toml file.
 
 ```
+julia --project=. -e 'import Pkg; Pkg.instantiate()'
 julia --project=. exampleUsage.jl
 ```
 
-produced normalized rmse of 0.6951, 0.6971, and 0.6748.
+Alternatively, with docker:
+
+```
+docker build -t dkf-env-julia .
+docker run --rm -ti -v $(pwd):/home/felixity/src dkf-env-julia julia --project=/opt/venv/ exampleUsage.jl
+```

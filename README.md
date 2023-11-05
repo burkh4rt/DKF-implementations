@@ -3,7 +3,7 @@
 ## DKF Implementations
 
 _This repository contains code implementations for the Discriminative Kalman
-Filter. [^1][^2][^3][^4]_
+Filter. [^1][^2][^3][^4][^5]_
 
 We currently offer example code for filtering using the following languages:
 
@@ -38,3 +38,18 @@ The data consists of run 1 from the pre-processed Flint data found in
     et al. Rapid calibration of an intracortical brain computer interface for
     people with tetraplegia. Journal of Neural Engineering 15 (2018)
     [[link](https://doi.org/10.1088/1741-2552/aa9ee7)]
+
+[^5]:
+    M. Burkhart. Discriminative Bayesian filtering lends momentum to the
+    stochastic Newton method for minimizing log-convex functions. Optimization
+    Letters 17 (2023) [[link](https://doi.org/10.1007/s11590-022-01895-5)]
+
+<!---
+format code with:
+```
+prettier --write --print-width 79 --prose-wrap always **/*.md
+black -l 79 python/
+R -e 'styler::style_dir("R/", transformers = styler::tidyverse_style(strict = TRUE))'
+julia -e 'using JuliaFormatter; format("julia/")'
+```
+-->

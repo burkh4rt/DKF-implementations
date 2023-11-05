@@ -3,8 +3,8 @@ classdef DiscriminativeKalmanFilter < handle
         stateModelA;
         stateModelGamma;
         stateModelS;
-        measurementModelF function_handle;
-        measurementModelQ function_handle;
+        measurementModelF;
+        measurementModelQ;
         currentPosteriorMean;
         currentPosteriorCovariance;
         dState;

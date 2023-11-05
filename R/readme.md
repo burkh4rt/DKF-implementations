@@ -1,5 +1,6 @@
-Runs with R version 4.1.2 (2021-11-01) "Bird Hippie" and the packages contained
-in `renv.lock`.
+## DKF Implementations | R
+
+> Runs with R 4.3.2 and the packages contained in `renv.lock`.
 
 ```
 R
@@ -8,4 +9,9 @@ renv::restore()
 source("exampleUsage.R")
 ```
 
-A trial run produced normalized rmse of 0.6167.
+Alternatively, with docker:
+
+```
+docker build -t dkf-env-r .
+docker run --rm -ti -v $(pwd):/home/felixity/src dkf-env-r Rscript exampleUsage.R
+```

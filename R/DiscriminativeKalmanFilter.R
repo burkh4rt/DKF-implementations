@@ -1,4 +1,3 @@
-
 DiscriminativeKalmanFilter <- setRefClass("DiscriminativeKalmanFilter", fields = list(
   stateModelA = "matrix",
   stateModelGamma = "matrix", stateModelS = "matrix", measurementModelF = "function",

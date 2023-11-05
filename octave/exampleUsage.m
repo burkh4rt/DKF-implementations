@@ -2,8 +2,8 @@
 
 % data source
 cd(fileparts(mfilename('fullpath')));
-z = readmatrix('../data/z.csv');
-x = readmatrix('../data/x.csv');
+z = dlmread('../data/z.csv');
+x = dlmread('../data/x.csv');
 
 % dimensions of latent states and observations, respectively
 dz = size(z,2);
@@ -26,27 +26,11 @@ A0 = z_train(2:end,:)'/z_train(1:end-1,:)';
 resids = z_train(2:end,:)'-A0*z_train(1:end-1,:)';
 Gamma0 = resids*resids'/n_train;
 
-% learn f() as a neural network
-nn = feedforwardnet(10,'trainbr');
-nn = configure(nn,x_train',z_train');
-nn = init(nn);
-nn.divideParam.trainRatio = 0.9;
-nn.divideParam.valRatio = 0.;
-nn.divideParam.testRatio = 0.1;
-[nn,tr] = train(nn,x_train',z_train');
-fx = @(x) nn(x');
-
-% learn Q() as a constant on held-out training data
-n_train_covariance = length(tr.testInd);
-x_train_covariance = x_train(tr.testInd,:)';
-z_train_covariance = z_train(tr.testInd,:)';
-z_train_preds = nn(x_train_covariance)';
-cov_est = zeros(dz,dz);
-for i = 1:n_train_covariance
-    err_i = z_train_preds(i,:) - z_train_covariance(:,i)';
-    cov_est = cov_est + err_i' * err_i / n_train_covariance;
-end
-Qx = @(x) cov_est;
+% learn f & Q with ordinary least squares
+H0 = z_train'/x_train';
+fx = @(x) H0*x';
+resids = z_train'-H0*x_train';
+Qx = @(x) resids*resids'/n_train;
 
 % initialize DKF using learned parameters
 f0 = fx(x_test(1,:));
@@ -63,7 +47,4 @@ end
 
 % handle output
 disp("normalized rmse")
-disp(sqrt(mean((z_test-z_preds).^2,'all'))/ sqrt(mean((z_test).^2,'all')));
-
-
-
+disp(sqrt(mean((z_test(:)-z_preds(:)).^2))/ sqrt(mean((z_test(:)).^2)));

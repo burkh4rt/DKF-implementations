@@ -47,18 +47,19 @@ z_train_mean = z_train[perm[1:Int(0.9 * 5000)], :]
 z_train_covariance = z_train[perm[Int(0.9 * 5000)+1:end], :]
 
 function NeuralNetwork()
-    return Chain(
-        Dense(dx, 10, relu),
-        Dropout(0.1),
-        Dense(10, dz)
-    )
+    return Chain(Dense(dx, 10, relu), Dropout(0.1), Dense(10, dz))
 end
 
 m = NeuralNetwork()
-data = Flux.Data.DataLoader((x_train_mean', z_train_mean'), batchsize = 100, shuffle = true, rng = rng)
+data = Flux.Data.DataLoader(
+    (x_train_mean', z_train_mean'),
+    batchsize = 100,
+    shuffle = true,
+    rng = rng,
+)
 loss(x, y) = sum(Flux.Losses.mse(m(x), y))
 
-for i in 1:20
+for i = 1:20
     Flux.train!(loss, Flux.params(m), data, Flux.Optimise.ADAM())
 end
 
@@ -76,7 +77,7 @@ DKF = DiscriminativeKalmanFilter(A0, Gamma0, S, fx, Qx, f0, Q0, dz)
 # perform filtering
 z_preds = zeros(size(z_test))
 z_preds[1, :] = f0
-for i in 2:n_test
+for i = 2:n_test
     z_preds[i, :] = predict!(DKF, x_test[i, :])
 end
 

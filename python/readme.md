@@ -1,4 +1,6 @@
-Runs on Python 3.9.9 with requirements as outlined in `requirements.txt`.
+## DKF Implementations | Python
+
+> Runs with Python 3.11.6 and requirements as outlined in `requirements.txt`.
 
 For example,
 
@@ -9,4 +11,9 @@ pip3 install -r requirements.txt
 python3 exampleUsage.py
 ```
 
-Three separate runs produced normalized rmse of 0.6709, 0.6901, and 0.6676.
+Alternatively, with docker:
+
+```
+docker build -t dkf-env-python .
+docker run --rm -ti -v $(pwd):/home/felixity/src dkf-env-python python exampleUsage.py
+```

@@ -6,6 +6,7 @@ import numpy as np
 import sklearn as skl
 from numpy.linalg import *
 
+
 @dataclasses.dataclass
 class DiscriminativeKalmanFilter:
     """
@@ -14,13 +15,14 @@ class DiscriminativeKalmanFilter:
     discriminative Kalman filter for Bayesian filtering with nonlinear and
     nongaussian observation models." Neural Comput. 32(5), 969–1017 (2020).
     """
+
     Α: np.ndarray  # from eq. (2.1b)
-    Γ: np.ndarray   # from eq. (2.1b)
-    S: np.ndarray   # from eq. (2.1a)
+    Γ: np.ndarray  # from eq. (2.1b)
+    S: np.ndarray  # from eq. (2.1a)
     f: callable  # from eq. (2.2)
     Q: callable  # from eq. (2.2)
-    μₜ: np.ndarray   # from eq. (2.6)
-    Σₜ: np.ndarray   # from eq. (2.6)
+    μₜ: np.ndarray  # from eq. (2.6)
+    Σₜ: np.ndarray  # from eq. (2.6)
 
     def stateUpdate(self):
         """

@@ -1,9 +1,9 @@
 # use this file with:
-# docker build -t dkf-env-python .
-# docker run --rm -ti -v $(pwd):/home/felixity/src dkf-env-python python exampleUsage.py
+# docker build -t dkf-env-jax .
+# docker run --rm -ti -v $(pwd):/home/felixity/src dkf-env-jax python exampleUsage.py
 #
 # to troubleshoot:
-# docker run --rm -ti -v $(pwd):/home/felixity/src --entrypoint /bin/bash dkf-env-python
+# docker run --rm -ti -v $(pwd):/home/felixity/src --entrypoint /bin/bash dkf-env-jax
 
 FROM python:3.11.6-bullseye
 

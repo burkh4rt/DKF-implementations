@@ -1,34 +1,26 @@
+#!/usr/bin/env python3
+
+import dataclasses
+
 import numpy as np
 import sklearn as skl
 from numpy.linalg import *
 
-
-class DiscriminativeKalmanFilter(skl.base.BaseEstimator):
+@dataclasses.dataclass
+class DiscriminativeKalmanFilter:
     """
     Implements the Discriminative Kalman Filter as described in Burkhart, M.C.,
     Brandman, D.M., Franco, B., Hochberg, L.R., & Harrison, M.T.'s "The
     discriminative Kalman filter for Bayesian filtering with nonlinear and
     nongaussian observation models." Neural Comput. 32(5), 969–1017 (2020).
     """
-
-    def __init__(
-        self,
-        Α=None,
-        Γ=None,
-        S=None,
-        f=None,
-        Q=None,
-        μₜ=None,
-        Σₜ=None,
-    ):
-        self.Α = Α  # from eq. (2.1b)
-        self.Γ = Γ  # from eq. (2.1b)
-        self.S = S  # from eq. (2.1a)
-        self.f = lambda x: f(x)  # from eq. (2.2)
-        self.Q = lambda x: Q(x)  # from eq. (2.2)
-        self.μₜ = μₜ  # from eq. (2.6)
-        self.Σₜ = Σₜ  # from eq. (2.6)
-        self.d = Α.shape[0]  # as in eq. (2)
+    Α: np.ndarray  # from eq. (2.1b)
+    Γ: np.ndarray   # from eq. (2.1b)
+    S: np.ndarray   # from eq. (2.1a)
+    f: callable  # from eq. (2.2)
+    Q: callable  # from eq. (2.2)
+    μₜ: np.ndarray   # from eq. (2.6)
+    Σₜ: np.ndarray   # from eq. (2.6)
 
     def stateUpdate(self):
         """

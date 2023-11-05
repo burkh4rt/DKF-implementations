@@ -1,9 +1,4 @@
-"""
-To run:
-```
-julia --project=. exampleUsage.jl
-```
-"""
+#!/usr/bin/env julia
 
 using DelimitedFiles
 using Flux

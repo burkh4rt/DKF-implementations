@@ -1,3 +1,6 @@
+# idiosyncratic
+python-jax/turquoise/*
+python/turquoise/*
 
 # Created by https://www.toptal.com/developers/gitignore/api/r,linux,macos,matlab,python,windows,pycharm+all,julia,intellij+all
 # Edit at https://www.toptal.com/developers/gitignore?templates=r,linux,macos,matlab,python,windows,pycharm+all,julia,intellij+all

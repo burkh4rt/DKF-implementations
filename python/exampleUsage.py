@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import numpy as np
 import tensorflow as tf
 from sklearn.model_selection import train_test_split as skl_tt_split
